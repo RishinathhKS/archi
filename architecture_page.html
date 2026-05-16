@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APACS Architecture Overview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        h1 { color: #1a1a1a; border-bottom: 2px solid #eaeaea; padding-bottom: 10px; }
+        h2 { color: #2c3e50; margin-top: 2rem; }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .description {
+            background-color: #f8faff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        ul { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>APACS Architecture Overview</h1>
+        <p>The APACS architecture is designed to orchestrate complex LangGraph intents, manage session memory, and interact deeply with SAP BW environments.</p>
+        
+        <hr>
+
+        <h2>1. Master Architecture</h2>
+        <div class="description">
+            <p>This view provides the high-level boundaries of the APACS AI Platform, the target Managed Systems (SAP AI Core, BW/BW4), and the end-user interaction layer.</p>
+        </div>
+        <img src="images/main_overview.png" alt="Main Architecture Overview">
+        <ul>
+            <li><strong>Chat UI & Session Management:</strong> Handles user queries and maintains conversational state.</li>
+            <li><strong>APACS Main Agent:</strong> The LangGraph intent orchestrator routing to specialized subagents.</li>
+            <li><strong>Target Systems:</strong> Execution environments including GraphDB, Vector DBs, and the BW/BW4 system.</li>
+            <li>Captures user input and retrieves context from the <strong>Session Store</strong>.</li>
+            <li>The <strong>APACS Main Agent</strong> classifies intent and delegates tasks to either RAG, General Knowledge, or BW Analysis subagents.</li>
+        </ul>
+		
+		<h2>2. RAG Agent</h2>
+        <div class="description">
+            <p>The dedicated semantic retrieval specialist responsible for grounding AI responses. It securely queries unstructured enterprise data—including SAP Notes, internal wikis, and historical ServiceNow cases—using the Vector Database to synthesize accurate, context-rich answers..</p>
+        </div>
+        <img src="images/subagent1_rag_drilldown.png" alt="Chat UI & Main Agent">
+
+        <h2>3. Subagents & RAG / External Systems</h2>
+        <div class="description">
+            <p>This view details how the RAG subagent interacts with unstructured data and MCP server groups.</p>
+        </div>
+        <img src="images/split2.png" alt="Subagents & RAG">
+        <ul>
+            <li><strong>RAG Agent:</strong> Executes semantic searches using the <strong>Vector Database</strong>.</li>
+            <li><strong>RAG MCP Servers:</strong> Acts as a gateway to external enterprise knowledge.</li>
+            <li><strong>Semantic Document Processor:</strong> Ingests Sharepoint documents and KT videos to generate embeddings.</li>
+        </ul>
+
+        <h2>4. BW Knowledge Graph & ABAP Analysis</h2>
+        <div class="description">
+            <p>This segment highlights how raw ABAP code is transformed into queryable topologies.</p>
+        </div>
+        <img src="images/split3.png" alt="Knowledge Graph">
+        <ul>
+            <li><strong>Code Graph Builder:</strong> Asynchronously fetches code from target systems (W4D, KIW) to build relationships in the <strong>Neo4j Graph Database</strong>.</li>
+        </ul>
+
+<h2>5. Subagent 2: General Knowledge</h2>
+        <div class="description">
+            <p>A focused drill-down into the fast-path resolution agent.</p>
+        </div>
+        
+        <img src="images/subagent2_general_knowledge_drilldown.png" alt="General Knowledge Subagent" style="max-width: 200px; display: block; margin: 1.5rem auto;">
+        
+        <ul>
+            <li>Answers queries which requires no tools, zero-shot inference directly against the <strong>LLM System</strong> (SAP AI Core).</li>
+        </ul>
+        <h2>6. Subagent 3: BW Analysis Tools</h2>
+        <div class="description">
+            <p>A focused drill-down into the diagnostic and execution modules.</p>
+        </div>
+        <img src="images/subagent3_bw_analysis_drilldown.png" alt="BW Analysis Tools">
+        <ul>
+            <li>Utilizes the <strong>BW Tools MCP Server Group</strong> to execute complex operations.</li>
+            <li>Tools include <strong>ADT DataFlow Replication</strong>, <strong>Text to DBIF</strong>, and <strong>HCPR Analyzer</strong>.</li>
+        </ul>
+    </div>
+</body>
+</html>
